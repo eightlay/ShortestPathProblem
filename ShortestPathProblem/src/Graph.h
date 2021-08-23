@@ -1,50 +1,10 @@
 #pragma once
 
-#include <cmath>
+#include "Utils.h"
+#include "VertexPair.h"
+
 #include <list>
 #include <unordered_map>
-
-// TODO: delete
-#include <iostream>
-
-// Struct to keep pairs of vertices
-struct VertexPair
-{
-	size_t from;
-	size_t to;
-
-	bool operator==(const VertexPair& other) const
-	{
-		return (from == other.from && to == other.to);
-	}
-};
-
-template <>
-struct std::hash<VertexPair>
-{
-    std::size_t operator()(const VertexPair& v) const
-    {
-        using std::size_t;
-        using std::hash;
-        using std::string;
-
-        // Compute individual hash values for first and
-        // second and combine them using XOR and bit shifting:
-
-        return hash<size_t>()(v.from) ^ (hash<size_t>()(v.to) << 1);
-    }
-};
-
-// Function to calculate distance
-template <typename T>
-double dist(std::pair<T, T>* v1, std::pair<T, T>* v2)
-{
-	return std::sqrt(
-		std::pow(v1->first - v2->first, 2)
-		+
-		std::pow(v1->second - v2->second, 2)
-	);
-}
 
 // Graph class
 template <typename T>
@@ -121,8 +81,13 @@ public:
 
 		const size_t from = (size_t)std::min(v1, v2);
 		const size_t to = (size_t)std::max(v1, v2);
+		
+		if (__distances.find({ from, to }) == __distances.end())
+		{
+			throw std::out_of_range("No such vertice");
+		}
 
-		return (__distances.find({ from, to }) == __distances.end()) ? INT_MAX : __distances[{from, to}];
+		return __distances[{from, to}];
 	}
 
 	// Get vertices

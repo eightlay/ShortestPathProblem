@@ -16,7 +16,7 @@ int main()
 
 	Graph<int> g(points, &points_num, connections, &connections_num);
 	
-	cout << g(0, 3);
+	cout << g(1, 3);
 
 	return 0;
 }
