@@ -6,4 +6,4 @@
 #include <iostream>
 
 // TODO: установите здесь ссылки на дополнительные заголовки, требующиеся для программы.
-#include "src/Graph.h"
+#include "src/SPP.h"
