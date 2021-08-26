@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-	Point<int> nodes[] = { {-61, 0}, {156, 0}, {0, 61}, {12, 1} };
+	Point<int> nodes[] = { {-61, 0}, {12, 1}, {0, 61}, {12, 1} };
 	size_t nodes_count = 4;
 
 	Arc arcs[] = { {2, 3}, {1, 2}, {0, 1} };
@@ -15,7 +15,7 @@ int main()
 
 	SPP<int> g(nodes, nodes_count, arcs, arcs_count);
 	
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		char* method;
 		if (i == 0) method = "dijkstra";

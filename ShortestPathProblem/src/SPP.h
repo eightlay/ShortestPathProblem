@@ -7,6 +7,9 @@
 #include <limits>
 #include <queue>
 
+// TODO: delete
+#include <iostream>
+
 template <typename T>
 class SPP : public Graph<T>
 {
@@ -16,9 +19,19 @@ public:
 	// Find a shortes path between node_from and node_to using specifed method
 	ShortestPath<T> find_path(size_t node_from, size_t node_to, char* method = "dijkstra")
 	{
+		if (node_from == node_to)
+		{
+			return ShortestPath<T>({node_from}, 0, true);
+		}
+
 		if (std::strcmp(method, "dijkstra") == 0)
 		{
 			return dijkstra(node_from, node_to);
+		}
+
+		if (std::strcmp(method, "greedy") == 0)
+		{
+			return greedy(node_from, node_to);
 		}
 
 		return ShortestPath<T>({}, 0, false);
@@ -34,7 +47,7 @@ private:
 		// Tentative distance to the node
 		T* tentative_dist = new T[nodes_count];
 
-		// Node we came from to current the node
+		// Node we came from to the current one
 		size_t* came_from = new size_t[nodes_count];
 
 		// Current node
@@ -54,9 +67,6 @@ private:
 		// Dijkstra's algorithm
 		while (true)
 		{
-			// Mark current node as visited
-			unvisited[current] = false;
-
 			// Updating tentative distances
 			// Iterate through all current's node neighbours
 			for (const size_t& neighbour : get_neighbours(current))
@@ -104,6 +114,9 @@ private:
 
 			// If the destination is reached, stop the algorithm
 			if (current == node_to) break;
+
+			// Mark current node as visited
+			unvisited[current] = false;
 		}
 
 		// Construct the path
@@ -131,54 +144,84 @@ private:
 
 	// Find a shortes path between node_from and node_to using Greedy heuristic algorithm
 	ShortestPath<T> greedy(size_t node_from, size_t node_to,
-		T(*heuristic)(std::pair<T, T>*, std::pair<T, T>*) = manh_dist<T>)
+		std::function<T(Point<T>*, Point<T>*)> heuristic = nullptr)
 	{
-		//// Compare function for priority queue
-		//auto cmp = [](std::pair<T, T>* left, std::pair<T, T>* right) { return heuristic(left, right); };
+		// If heuristic is not specified, use distance function of the graph
+		if (heuristic == nullptr)
+		{
+			heuristic = distance;
+		}
 
-		//// Is node unvisited or not
-		//bool* unvisited = new bool[nodes_count];
+		// Priority queue
+		auto cmp = [&](size_t left, size_t right) 
+		{ return heuristic(&nodes[left], &nodes[node_to]) > heuristic(&nodes[right], &nodes[node_to]); };
 
-		//// Node we came from to current the node
-		//size_t* came_from = new size_t[nodes_count];
+		std::priority_queue<size_t, std::vector<size_t>, decltype(cmp)> frontier(cmp);
 
-		//// Current node
-		//size_t current = node_from;
+		// Is node unvisited or not
+		bool* unvisited = new bool[nodes_count];
 
-		//// Initial values
-		//for (size_t i = 0; i < nodes_count; i++)
-		//{
-		//	unvisited[i] = true;
-		//	came_from[i] = i;
-		//}
+		// Node we came from to the current one
+		size_t* came_from = new size_t[nodes_count];
 
-		//unvisited[node_from] = false;
+		// Current node
+		size_t current = node_from;
 
-		//std::priority_queue<size_t, std::vector<size_t>, decltype(cmp)> q(cmp);
-		//
-		//// TODO: greedy algo
+		// Initial values
+		for (size_t i = 0; i < nodes_count; i++)
+		{
+			unvisited[i] = true;
+			came_from[i] = i;
+		}
 
-		//// Construct the path
-		//std::list<size_t> path = { node_to };
+		unvisited[node_from] = false;
+		
+		// Greedy heuristic algorithm
+		while (true)
+		{
+			// Iterate through all current's node neighbours
+			for (const size_t& neighbour : get_neighbours(current))
+			{
+				// If neighbour is unvisited
+				if (unvisited[neighbour])
+				{
+					frontier.push(neighbour);
+					came_from[neighbour] = current;
+				}
+			}
 
-		//while (current != node_from)
-		//{
-		//	size_t prev_node = came_from[current];
-		//	path.push_back(prev_node);
-		//	current = prev_node;
-		//}
+			// If there is no other nodes in frontier,
+			// there is no path from node_from to node_to
+			if (frontier.size() == 0) return ShortestPath<T>({}, 0, false);
 
-		//path.reverse();
+			// Assign new current node
+			current = frontier.top();
+			frontier.pop();
 
-		//// Distance to node_to
-		//T path_distance = tentative_dist[node_to];
+			// If the destination is reached, stop the algorithm
+			if (current == node_to) break;
+		}
 
-		//// Free memory
-		//delete[] unvisited;
-		//delete[] tentative_dist;
-		//delete[] came_from;
+		// Construct the path
+		std::list<size_t> path = { node_to };
+		T path_distance = 0;
 
-		//return ShortestPath<T>(path, path_distance);
-		return ShortestPath<T>({}, 0);
+		while (current != node_from)
+		{
+			size_t prev_node = came_from[current];
+			
+			path.push_back(prev_node);
+			path_distance += get_distance(prev_node, current);
+
+			current = prev_node;
+		}
+
+		path.reverse();
+
+		// Free memory
+		delete[] unvisited;
+		delete[] came_from;
+
+		return ShortestPath<T>(path, path_distance, true);
 	}
 };
