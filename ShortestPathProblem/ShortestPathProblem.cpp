@@ -10,7 +10,7 @@ int main()
 	Point<int> nodes[] = { {-61, 0}, {156, 0}, {0, 61}, {12, 1} };
 	size_t nodes_count = 4;
 
-	Arc arcs[] = { {3, 2}, {1, 2}, {0, 1} };
+	Arc arcs[] = { {2, 3}, {1, 2}, {0, 1} };
 	size_t arcs_count = 3;
 
 	SPP<int> g(nodes, nodes_count, arcs, arcs_count);

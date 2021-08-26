@@ -93,37 +93,17 @@ private:
 					}
 				}
 			}
-			
-			// If tentative distances are the same take the first unvisited node
-			if (min_node == current)
-			{
-				for (size_t node = 0; node < nodes_count; node++)
-				{
-					if (unvisited[node])
-					{
-						min_node = node;
-						min_dist = tentative_dist[node];
-						break;
-					}
-				}
-			}
+
+			// Stop algorithm if the smallest tentative distance 
+			// among the nodes in the unvisited set is infinity.
+			// It means, that there is no path from node_from to node_to
+			if (current == min_node) return ShortestPath<T>({}, 0, false);
 
 			// Assign new current node
 			current = min_node;
 
 			// If the destination is reached, stop the algorithm
 			if (current == node_to) break;
-			
-			// Check if there still are unvisited nodes
-			bool has_unvisited = false;
-
-			for (size_t node = 0; node < nodes_count; node++)
-			{
-				has_unvisited |= unvisited[node];
-			}
-
-			// If there is no unvisited nodes, there is no path between node_from and node_to
-			return ShortestPath<T>({}, 0, false);
 		}
 
 		// Construct the path
