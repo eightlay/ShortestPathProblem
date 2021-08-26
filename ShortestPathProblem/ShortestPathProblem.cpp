@@ -15,7 +15,7 @@ int main()
 
 	SPP<int> g(nodes, nodes_count, arcs, arcs_count);
 	
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		char* method;
 		if (i == 0) method = "dijkstra";
