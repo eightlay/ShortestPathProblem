@@ -3,17 +3,6 @@
 #include "Point.h"
 
 #include <cmath>
-#include <functional>
-
-// Placeholder distance function for heuristic algorithms
-template <typename T>
-T _placeholder_dist(Point<T>* from, Point<T>* to)
-{
-	return 0;
-}
-
-template <typename T>
-std::function<T(Point<T>*, Point<T>*)> placeholder_dist = _placeholder_dist<T>;
 
 // Function to calculate Euclidian distance
 template <typename T>

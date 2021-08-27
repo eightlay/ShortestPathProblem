@@ -1,9 +1,8 @@
-﻿// ShortestPathProblem.h : включаемый файл для стандартных системных включаемых файлов
-// или включаемые файлы для конкретного проекта.
+﻿#pragma once
 
-#pragma once
-
+// Standard libs
 #include <iostream>
+#include <chrono>
 
-// TODO: установите здесь ссылки на дополнительные заголовки, требующиеся для программы.
+// Source libs
 #include "src/SPP.h"

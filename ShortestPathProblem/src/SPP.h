@@ -7,9 +7,6 @@
 #include <limits>
 #include <queue>
 
-// TODO: delete
-#include <iostream>
-
 template <typename T>
 class SPP : public Graph<T>
 {
@@ -22,7 +19,7 @@ public:
 	{
 		if (node_from == node_to)
 		{
-			return ShortestPath<T>({node_from}, 0, true);
+			return ShortestPath<T>({node_from}, 0, true, true);
 		}
 
 		if (std::strcmp(method, "dijkstra") == 0)
@@ -40,7 +37,7 @@ public:
 			return astar(node_from, node_to, heuristic);
 		}
 
-		return ShortestPath<T>({}, 0, false);
+		return ShortestPath<T>({}, 0, false, false);
 	}
 
 private:
@@ -113,7 +110,7 @@ private:
 			// Stop algorithm if the smallest tentative distance 
 			// among the nodes in the unvisited set is infinity.
 			// It means, that there is no path from node_from to node_to
-			if (current == min_node) return ShortestPath<T>({}, 0, false);
+			if (current == min_node) return ShortestPath<T>({}, 0, false, false);
 
 			// Assign new current node
 			current = min_node;
@@ -145,7 +142,7 @@ private:
 		delete[] tentative_dist;
 		delete[] came_from;
 
-		return ShortestPath<T>(path, path_distance, true);
+		return ShortestPath<T>(path, path_distance, true, true);
 	}
 
 	// Find a shortes path between node_from and node_to using Greedy heuristic algorithm
@@ -198,7 +195,7 @@ private:
 
 			// If there is no other nodes in frontier,
 			// there is no path from node_from to node_to
-			if (frontier.size() == 0) return ShortestPath<T>({}, 0, false);
+			if (frontier.size() == 0) return ShortestPath<T>({}, 0, false, false);
 
 			// Assign new current node
 			current = frontier.top();
@@ -231,7 +228,7 @@ private:
 		delete[] unvisited;
 		delete[] came_from;
 
-		return ShortestPath<T>(path, path_distance, true);
+		return ShortestPath<T>(path, path_distance, true, false);
 	}
 
 	// Find a shortes path between node_from and node_to using A* algorithm
@@ -304,7 +301,7 @@ private:
 
 			// If there is no other nodes in frontier,
 			// there is no path from node_from to node_to
-			if (frontier.size() == 0) return ShortestPath<T>({}, 0, false);
+			if (frontier.size() == 0) return ShortestPath<T>({}, 0, false, false);
 
 			// Assign new current node
 			current = frontier.top();
@@ -337,6 +334,6 @@ private:
 		delete[] tentative_dist;
 		delete[] came_from;
 
-		return ShortestPath<T>(path, path_distance, true);
+		return ShortestPath<T>(path, path_distance, true, true);
 	}
 };
